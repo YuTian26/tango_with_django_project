@@ -11,7 +11,6 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 
 
-
 def index(request):
     category_list = Category.objects.order_by('-likes')[:5]
     page_list = Page.objects.order_by('-views')[:5]
@@ -46,20 +45,7 @@ def show_category(request, category_name_slug):
         context_dict['pages'] = None
     return render(request, 'rango/category.html', context=context_dict)
 
-def add_category(request):
-    form = CategoryForm()
-
-    if request.method == 'POST':
-        form = CategoryForm(request.POST)
-
-        if form.is_valid():
-            form.save(commit=True)
-            return redirect('/rango/')
-        else:
-            print(form.errors)
-
-    return render(request, 'rango/add_category.html', {'form': form})
-
+@login_required
 def add_category(request):
     form = CategoryForm()
 
@@ -74,6 +60,7 @@ def add_category(request):
 
     return render(request, 'rango/add_category.html', {'form': form})
 
+@login_required
 def add_page(request, category_name_slug):
     try:
         category = Category.objects.get(slug=category_name_slug)
@@ -101,7 +88,6 @@ def add_page(request, category_name_slug):
 
     context_dict = {'form': form, 'category': category}
     return render(request, 'rango/add_page.html', context=context_dict)
-
 
 def register(request):
     registered = False
@@ -177,4 +163,4 @@ def visitor_cookie_handler(request):
     if (datetime.now() - last_visit_time).days > 0:
         visits = visits + 1
     else:
-        request.session['visits'] = visits
+         request.session['visits'] = visits
