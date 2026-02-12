@@ -18,12 +18,10 @@ class PageForm(forms.ModelForm):
     views = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
 
     def clean(self):
-        cleaned_data = self.cleaned_data 
+        cleaned_data = self.cleaned_data
         url = cleaned_data.get('url')
-
-        if url and not url.startswith('http://'):
-            url = f'http://{url}'
-            cleaned_data['url'] = url
+        if url and not url.startswith('http://') and not url.startswith('https://'):
+            cleaned_data['url'] = f'http://{url}'
         return cleaned_data
     class Meta:
         model = Page
